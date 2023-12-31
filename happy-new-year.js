@@ -1,6 +1,9 @@
 // Main code:
 
+const targetDate = new Date(2024, 0, 1, 0, 0, 0);
+const message = document.getElementById("message");
 const canvas = document.getElementById("fireworks");
+
 canvas.style.position = 'relative';
 canvas.style.width = '80vw';
 canvas.style.height = '80vh';
@@ -9,25 +12,44 @@ canvas.height = canvas.clientHeight;
 
 const ctx = canvas.getContext('2d');
 
-window.addEventListener('resize', function() {
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-});
-
 let gravity = 0.2;
 let snapTime = 0;
-let flash = false;
 
 let fireworks = [];
 let numOfFireworks = 20;
-for (let i = 0; i < numOfFireworks; i++) {
-  fireworks.push(new Firework(rndNum(canvas.width), canvas.height));
-}
 
-draw();
-
+updateCountdownAndStartFireworks();
 
 // Functions:
+
+function updateCountdownAndStartFireworks() {
+  let secondsUntil = Math.floor((targetDate.getTime() - new Date().getTime()) / 1000);
+  if (secondsUntil >= 1) {
+    if (secondsUntil < 20) {
+      message.innerHTML = `${secondsUntil}`;
+    }
+    else {
+      message.innerHTML = `${secondsUntil} secs`;
+    }
+    setTimeout(updateCountdownAndStartFireworks, 1000);
+  }
+  else {
+    const year = new Date().getFullYear();
+    message.innerHTML = `Happy ${year}`;
+    startFireworks();
+  }
+}
+
+function startFireworks() {
+  window.addEventListener('resize', function() {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+  });
+  for (let i = 0; i < numOfFireworks; i++) {
+    fireworks.push(new Firework(rndNum(canvas.width), canvas.height));
+  }
+  draw();  
+}
 
 function rndNum(num) {
   return (Math.random() * num) + 1;
@@ -88,7 +110,6 @@ function Firework(x, y) {
     }
     else {
       if (exParticles.length === 0) {
-        flash = true;
         for (let i = 0; i < exPLen; i++) {
           exParticles.push(new Particle(this.pos, new Vector(-rndNum(10) + 5, -rndNum(10) + 5)));
           exParticles[exParticles.length - 1].start = time;
@@ -150,17 +171,11 @@ function draw(time) {
   update(time);
 
   ctx.fillStyle = '#1d1d1d';
-  if (flash) {
-    flash = false;
-  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   ctx.fillStyle = 'white';
   ctx.font = "30px Arial";
-  let newTime = time - snapTime;
   snapTime = time;
-
-  //ctx.fillText(newTime,10,50);
 
   ctx.fillStyle = 'blue';
   for (let i = 0, len = fireworks.length; i < len; i++) {
