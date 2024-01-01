@@ -1,6 +1,5 @@
 // Main code:
 
-const targetDate = new Date(2024, 0, 1, 0, 0, 0);
 const message = document.getElementById("message");
 const canvas = document.getElementById("fireworks");
 
@@ -15,6 +14,7 @@ const ctx = canvas.getContext('2d');
 let gravity = 0.2;
 let snapTime = 0;
 
+let runFireworks = false;
 let fireworks = [];
 let numOfFireworks = 20;
 
@@ -23,21 +23,43 @@ updateCountdownAndStartFireworks();
 // Functions:
 
 function updateCountdownAndStartFireworks() {
-  let secondsUntil = Math.floor((targetDate.getTime() - new Date().getTime()) / 1000);
-  if (secondsUntil >= 1) {
-    if (secondsUntil < 20) {
-      message.innerHTML = `${secondsUntil}`;
-    }
-    else {
-      message.innerHTML = `${secondsUntil} secs`;
-    }
-    setTimeout(updateCountdownAndStartFireworks, 1000);
-  }
-  else {
-    const year = new Date().getFullYear();
+  const now = new Date();
+  const year = now.getFullYear();
+  const day = now.getDate();
+  const month = now.getMonth() + 1;
+
+  if ((day === 1) && (month === 1)) {
     message.innerHTML = `Happy ${year}`;
     startFireworks();
   }
+  else {
+    stopFireworks();
+    let targetDate = new Date(year + 1, 0, 1);
+    let secondsUntil = Math.floor((targetDate.getTime() - now.getTime()) / 1000);
+    if (secondsUntil <= 20) {
+      message.innerHTML = `${secondsUntil}`;
+    }
+    else if (secondsUntil <= (2*60)) { // Less than 2 minutes
+      message.innerHTML = `${secondsUntil} secs`;
+    }
+    else if (secondsUntil <= (2*60*60)) { // Less than 2 hours
+      let minutesUntil = Math.floor(secondsUntil / 60);
+      message.innerHTML = `${minutesUntil} mins`;
+    }
+    else if (secondsUntil <= (2*3600*24)) { // Less than 2 days
+      let hoursUntil = Math.floor(secondsUntil / 3600);
+      message.innerHTML = `${hoursUntil} hrs`;
+    }
+    else {
+      let daysUntil = Math.floor(secondsUntil / (3600 * 24));
+      message.innerHTML = `${daysUntil} days`;
+    }
+    setTimeout(updateCountdownAndStartFireworks, 1000);
+  }
+}
+
+function stopFireworks() {
+  runFireworks = false;
 }
 
 function startFireworks() {
@@ -45,9 +67,11 @@ function startFireworks() {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
   });
+  fireworks = [];
   for (let i = 0; i < numOfFireworks; i++) {
     fireworks.push(new Firework(rndNum(canvas.width), canvas.height));
   }
+  runFireworks = true;
   draw();  
 }
 
