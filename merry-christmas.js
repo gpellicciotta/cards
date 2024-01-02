@@ -1,5 +1,4 @@
-import * as snowflakes from './snowflakes.js';
-
+import * as snowflakes from 'https://www.pellicciotta.com/hinolugi-support.js/js/snowflakes.js';
 import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.js';
 
 let state = 0; // Not snowing
@@ -13,10 +12,7 @@ document.addEventListener("click", () => {
       break;
     case 1: // Snowing starts:  
       log.info("It starts to snow...")
-      snowflakes.start({
-        count: 30,
-        symbols: [ 'red', 'green', 'blue', 'yellow' ]
-      });
+      snowflakes.start();
       break;
     case 2: // Snowing stops:
       log.info("Snowing stops now...")

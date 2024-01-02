@@ -1,4 +1,4 @@
-import * as fireworks from './fireworks.js'
+import * as fireworks from 'https://www.pellicciotta.com/hinolugi-support.js/js/fireworks.js'
 
 const TARGET_DATE = new Date(2024, 0, 2, 11, 1);
 updateCountdownAndStartFireworks();

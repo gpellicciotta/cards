@@ -1,4 +1,4 @@
-import * as fireworks from './fireworks.js'
+import * as fireworks from 'https://www.pellicciotta.com/hinolugi-support.js/js/fireworks.js'
 
 updateCountdownAndStartFireworks();
 
