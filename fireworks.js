@@ -7,8 +7,8 @@ import {Vector, vectorFromPolar, vectorFromCartesian} from 'https://www.pellicci
 // Constants
 
 const FRAMES_PER_SECOND = 60;
-const GRAVITY = new Vector(0, 0.048);
-const MAX_PARTICLE_TRAIL = 10;
+const GRAVITY = new Vector(0, 0.07);
+const MAX_PARTICLE_TRAIL = 3;
 
 // Global state
 
@@ -121,13 +121,8 @@ function step(fireworksInfo) {
     fireworksInfo.fireworksBox.startNewFirework();
   }
 
-  // TODO: keep track of trails so any background color would work
-  // Draw background
-  //fireworksInfo.mainCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-  //fireworksInfo.mainCtx.fillRect(0, 0, fireworksInfo.canvasWidth, fireworksInfo.canvasHeight);
-  fireworksInfo.mainCtx.clearRect(0, 0, fireworksInfo.canvasWidth, fireworksInfo.canvasHeight);
-
   // Draw active fireworks
+  fireworksInfo.mainCtx.clearRect(0, 0, fireworksInfo.canvasWidth, fireworksInfo.canvasHeight);
   fireworksInfo.fireworksBox.step();
   fireworksInfo.fireworksBox.render(fireworksInfo.mainCtx);
 }
@@ -156,28 +151,18 @@ class FireworkBox {
     let hue = utils.random(0, 360);
     let xOrig = Math.floor(this._width / 2);
     let origin = new Vector(xOrig, this._height);
+    
+    let xTarget = target ? target.x : utils.random(this._width * 0.1, this._width * 0.9); // between 20-80% of width
+    let yTarget = target ? target.y : utils.random(this._height * 0.2, this._height * 0.4); // between 60-80% of height
+
     let t = 2 * FRAMES_PER_SECOND; // 2s to reach target
-    let xVel = this._width / 3 / t;
-    let initVelocity = new Vector(utils.random(-xVel, xVel), utils.random(-5, -8));
-    if (target) {
-      origin = new Vector(Math.floor(this._width/2), this._height);
-      let s = target.minus(origin);
-      let yDist = s.y;
-      let xDist = s.x;
-      // s = u.t + 1/2.a.t^2, with a = 0 in x direction
-      // ==> u = s/t
-      let xVel = xDist / t;
-      // s = u.t + 1/2.g.t^2
-      // ==> u = s/t - 1/2.g.t
-      let yVel = yDist / t - this._gravity.y / 2 * t;
-      initVelocity = new Vector(xVel, yVel);
-      //console.log("Manually ignited from: " + origin + " with initial velocity: " + initVelocity);
-      this._fireworks.push(new Firework(origin, initVelocity, this._shape, hue, target));
-    }
-    else {
-      //console.log("Ignited from: " + origin + " with initial velocity: " + initVelocity);
-      this._fireworks.push(new Firework(origin, initVelocity, this._shape, hue));
-    }
+
+    let xVel = (xTarget - xOrig) / t;
+    let yVel = -Math.sqrt(2 * GRAVITY.y * (this._height - yTarget));
+
+    let initialVelocity = new Vector(xVel, yVel);
+    //console.log("Ignited from: " + origin + " with initial velocity: " + initVelocity);
+    this._fireworks.push(new Firework(origin, initialVelocity, this._shape, hue));
   }
 
   step() {

@@ -1,0 +1,58 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: rgb(29, 29, 29);
+  color: white;
+  font-size: 200%;
+
+  min-width: 100vw;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+
+#message {
+  position: fixed;
+  font-size: 500%;
+  color: rgba(255, 255, 255, 0.8);
+  animation: pulse 60s ease-in-out infinite alternate;
+  border: none;
+  background-color: transparent;
+}
+
+canvas.fireworks {
+  position: relative;
+  width: 90vw;
+  height: 80vh;
+}
+
+@keyframes pulse {
+	0% {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  25% {
+    color: blue;
+	}
+
+  50% {
+    color: rgba(255, 255, 255, 0.8);
+	}
+
+  75% {
+    color: rebeccapurple;
+	}
+
+	100% {
+    color: rgba(255, 255, 255, 0.8);
+	}
+}
