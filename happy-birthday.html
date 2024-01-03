@@ -3,13 +3,50 @@
   <head>
     <title>Happy Birthday</title>
     <meta charset="utf-8">
-    <link type='text/css'  rel='preload' as='style' onload='this.rel="stylesheet"' href='https://fonts.googleapis.com/css?family=Roboto&display=swap'>    
+    <link type='text/css'  rel='preload' as='style' onload='this.rel="stylesheet"' href='https://fonts.googleapis.com/css?family=Roboto&display=swap'>
     <link rel="stylesheet" href="happy-birthday.css">
     <script defer src="https://kit.fontawesome.com/1c60ca333d.js" crossorigin="anonymous"></script>
-    <script defer type="module" src="happy-birthday.js"></script>
+    <script defer type="module" src="happy-birthday.mjs"></script>
   </head>
   <body>
     <p id="message">!!! Happy Birthday !!!</p>
-    <canvas class="fireworks"></canvas>    
+    <canvas id="fireworks"></canvas>
+    <div id="help">
+      <h1>Happy Birthday Card</h1>
+      <p>This digital card wishes somebody a happy birthday, by first counting down until the target date, and then showing a <q>Happy Birthday</q> message and fireworks.</p>
+      <h2>Configuration</h2>
+      <p>The card experience can be tweaked by using following query parameters:</p>
+      <ul>
+        <li>
+          <b>date</b>
+          <p>The target date to count down to. Should be provided in ISO form, e.g. 2024-07-16T12:00.<br/>If none is provided, 10 seconds from now will be assumed.</p>
+        </li>
+        <li>
+          <b>message</b>
+          <p>A custom message to be shown instead of the standard <q>Happy Birthday</q>.</p>
+        </li>
+        <li>
+          <b>shape</b>
+          <p>The shape of exploding fireworks. Following shapes can be used: <q>normal</q>, <q>hearts</q>, <q>donuts</q> and <q>random</q></p>
+        </li>
+      </ul>
+      <p>Parameters should be separated from the main URL by a question mark, and an &amp;-sign should be used between parameters.</p>
+      <p>For each individual parameter, the parameter name and value should be separated by a colon.</p>
+      <h3>Examples</h3>
+      <p>Following are example URLs, with the <span class="param-name">parameter names (blue)</span>, <span class="param-value">values (green)</span> and <span class="separator">separators (yellow)</span> all highlighted in a different color.</p>
+      <ul>
+        <li>
+          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">help</span></b>
+          <p>Asking to show this help text.</p>
+        </li>
+        <li>
+          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">donuts</span><span class="separator">&amp;</span><span class="param-name">date</span><span class="separator">=</span><span class="param-value">2024-07-16T12:00</span></b>
+          <p>Asking to target 16 July 2024, at noon while showing donuts-style fireworks.</p>
+        </li>
+        <li>
+          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">message</span><span class="separator">=</span><span class="param-value">Duck, there is a bomb!</span></b>
+          <p>Asking to show the custom warning message after 10 seconds.</p>
+        </li>        
+    </div>
   </body>
 </html>

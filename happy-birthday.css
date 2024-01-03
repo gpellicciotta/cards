@@ -20,6 +20,10 @@ body {
   position: relative;
 }
 
+body.help {
+  font-size: 125%;
+}
+
 #message {
   position: fixed;
   font-size: 500%;
@@ -29,10 +33,67 @@ body {
   background-color: transparent;
 }
 
-canvas.fireworks {
+body.help > #message {
+  display: none;
+  position: relative;
+}
+
+body.help > #fireworks {
+  display: none;
+}
+
+#fireworks {
   position: relative;
   width: 90vw;
   height: 80vh;
+}
+
+#help {
+  padding: 0 2em;
+}
+
+#help h1, #help h2, #help h3 {
+  padding-top: 1em;
+  padding-bottom: 0.25em;
+}
+
+#help p {
+  padding-bottom: 1em;
+}
+
+#help ul {
+  padding: 0.5em 1em;
+}
+
+#help ul, #help ul li {
+  display: flex;
+  flex-direction: column;
+}
+
+#help ul li b {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#help .param-name {
+  color: #3fc5f0;
+}
+
+#help .param-value {
+  color: #6decb9;
+}
+
+#help .separator {
+  color: #eef5b2;
+}
+
+#help {
+  display: none;
+}
+
+body.help > #help {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 }
 
 @keyframes pulse {
