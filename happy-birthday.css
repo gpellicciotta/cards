@@ -49,6 +49,7 @@ body.help > #fireworks {
 }
 
 #help {
+  display: none;  
   padding: 0 2em;
 }
 
@@ -86,11 +87,7 @@ body.help > #fireworks {
   color: #eef5b2;
 }
 
-#help {
-  display: none;
-}
-
-body.help > #help {
+body.help #help {
   display: flex;
   flex-direction: column;
   justify-content: start;
