@@ -1,5 +1,5 @@
-import * as snowflakes from 'https://www.pellicciotta.com/hinolugi-support.js/js/snowflakes.js';
-import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.js';
+import * as snowflakes from 'https://www.pellicciotta.com/hinolugi-support.js/js/snowflakes.mjs';
+import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
 
 let state = 1; // Snowing
 snowflakes.start();
