@@ -2,10 +2,13 @@ import * as fireworks from 'https://www.pellicciotta.com/hinolugi-support.js/js/
 import * as utils from 'https://www.pellicciotta.com/hinolugi-support.js/js/utils.mjs';
 import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
 
+const fireworksPerSecond = 0.6;
+
 let showHelpInfo = false;
-let targetDate = new Date(new Date().getTime() + 10000);
+let targetDate = new Date(new Date().getTime() + 10);
 let targetMessage = "Happy Birthday !";
-let targetShape = "hearts";
+let targetShape = "twinkle";
+let svgPathId = null;
 
 // Check URL params:
 const url = new URL(window.location.href);
@@ -50,11 +53,16 @@ function updateCountdownAndStartFireworks() {
   const now = new Date();
   const secondsUntil = Math.floor((targetDate.getTime() - now.getTime()) / 1000);
 
+  let hue = utils.random(0, 360);
+  let color = "hsla(" + hue + ", 50%, 50%, 0.8)";
+  message.style.color = color;
+
   if (secondsUntil < 1) {
     message.innerHTML = targetMessage;
     fireworks.start(canvas, { 
       shape: targetShape,
-      frequency: 3
+      frequency: fireworksPerSecond,
+      svgPathId: svgPathId
     });
   }
   else {
