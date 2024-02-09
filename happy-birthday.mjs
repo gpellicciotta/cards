@@ -5,7 +5,7 @@ import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mj
 const fireworksPerSecond = 0.6;
 
 let showHelpInfo = false;
-let targetDate = new Date(new Date().getTime() + 10);
+let targetDate = new Date(new Date().getTime() + 10000);
 let targetMessage = "Happy Birthday !";
 let targetShape = "twinkle";
 let svgPathId = null;
