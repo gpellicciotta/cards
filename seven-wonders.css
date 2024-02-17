@@ -114,6 +114,7 @@ header > h3 {
 
 .card input[type="number"] {
   text-align: right;
+  font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
 }
 
 .card input::selection {
@@ -125,6 +126,13 @@ header > h3 {
   font-style: normal;
   align-self: center;
   text-align: center;
+}
+
+.card img {
+  align-self: center;
+  text-align: center;
+  object-fit: contain;
+  height: 75%;
 }
 
 .players > i {
