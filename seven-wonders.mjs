@@ -86,8 +86,30 @@ function reset() {
   pl1NameInput.focus();
 }
 
-document.body.addEventListener("change", (e) => {
-  sum();
+document.querySelectorAll("input[type=number]").forEach((el) => {
+  if (el.readOnly) {
+    return ;
+  }
+  el.addEventListener("focus", (e) => {
+    el.select();
+  });
+  el.addEventListener("keydown", (e) => {
+    if (e.keyCode === 107) { // Plus key
+      el.value = +el.value + 1;
+      e.preventDefault();
+    }
+    else if (e.keyCode === 109) { // Minus key
+      el.value = Math.max(0, +el.value - 1);
+      e.preventDefault();
+    }
+    sum();
+  });
+  el.addEventListener("change", (e) => {
+    if (+el.value < 0) {
+      el.value = 0;
+    }
+    sum();
+  });  
 });
 
 document.getElementById("reset-button").addEventListener("click", (e) => {

@@ -108,6 +108,11 @@ header > h3 {
   text-align: right;
 }
 
+.card input::selection {
+  color: white;
+  background: gold;
+}
+
 .card i {
   font-style: normal;
   align-self: center;
