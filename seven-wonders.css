@@ -1,0 +1,201 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: rgb(29, 29, 29);
+  color: white;
+  font-size: 200%;
+
+  min-width: 100vw;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  position: relative;
+}
+
+#buttons {
+  position: fixed;
+  top: 0.5rem;
+  right: 1rem;
+}
+
+#buttons > button {
+  padding: 0.5em 0.5em;
+  background-color: red;
+  color: black;
+  font-size: 75%;
+  border: none;
+  border-radius: 50%;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 1rem;
+  padding-top: 0;
+}
+
+header > h1 {
+  color: red;
+  font-size: 350%;
+}
+
+header > h2 {
+  color: white;
+  font-size: 150%;
+  margin-left: -2em;
+}
+
+header > h3 {
+  color: gold;
+  font-size: 75%;
+  padding-top: 2.5em;
+  margin-left: -3em;
+}
+
+.card {
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  justify-content: center;
+  gap: 0.25rem;
+
+  max-width: 90vw;
+}
+
+.card > .row {
+  display: grid;
+  grid-template-columns: 1.5em 1fr 1fr;
+  align-items: stretch;
+  gap: 0.25rem;
+
+  max-width: 90vw;
+}
+
+.card > .row > span {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.card input {
+  padding: 0.125rem 0.5rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 20%);
+  outline: none;
+  font-size: 100%;
+  min-width: 3em;
+  max-width: 10em;
+  text-align: center;
+}
+
+.card input[type="number"] {
+  text-align: right;
+}
+
+.card i {
+  font-style: normal;
+  align-self: center;
+  text-align: center;
+}
+
+.players > i {
+  color: white;
+}
+
+.players > input {
+  color: white;
+}
+
+.players > input.winner {
+  background-color: gold;
+  color: white;
+}
+
+.blue-cards > i {
+  color: blue;
+}
+
+.blue-cards > input {
+  color: blue;
+}
+
+.green-cards > i {
+  color: green;
+}
+
+.green-cards > input {
+  color: green;
+}
+
+.purple-cards > i {
+  color: purple;
+}
+
+.purple-cards > input {
+  color: purple;
+}
+
+.wonders > i {
+  color: gold;
+}
+
+.wonders > input {
+  color: gold;
+}
+
+.yellow-cards > i {
+  color: gold;
+}
+
+.yellow-cards > input {
+  color: gold;
+}
+
+.green-coins > i {
+  color: green;
+}
+
+.green-coins > input {
+  color: green;
+}
+
+.money-coins > i {
+  color: gold;
+}
+
+.money-coins > input {
+  color: gold;
+}
+
+.military > i {
+  color: red;
+}
+
+.military > input {
+  color: red;
+}
+
+.sum > i {
+  color: white;
+}
+
+.sum > input {
+  background-color: white;
+  color: black;
+  font-weight: bolder;
+}
+
+.sum > input.winner {
+  background-color: gold;
+  color: white;
+}
