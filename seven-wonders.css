@@ -86,6 +86,14 @@ header > h3 {
   max-width: 90vw;
 }
 
+.card > .row:first-child {
+  padding-bottom: 0.5rem;
+}
+
+.card > .row:last-child {
+  padding-top: 0.75rem;
+}
+
 .card > .row > span {
   display: flex;
   flex-direction: row;
@@ -125,6 +133,7 @@ header > h3 {
 
 .players > input {
   color: white;
+  border: none;
 }
 
 .players > input.winner {
@@ -201,9 +210,9 @@ header > h3 {
 }
 
 .sum > input {
-  background-color: white;
-  color: black;
-  font-weight: bolder;
+  background-color: transparent;
+  color: white;
+  border: none;
 }
 
 .sum > input.winner {
