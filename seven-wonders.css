@@ -151,10 +151,17 @@ header > h3 {
 
 .blue-cards > i {
   color: blue;
+  background-color: #C7EAFA;
 }
 
 .blue-cards > input {
-  color: blue;
+  color: black;
+  background-color: #C7EAFA;
+}
+
+.blue-cards > input::selection {
+  color: black;
+  background-color: blue;
 }
 
 .green-cards > i {
@@ -162,7 +169,13 @@ header > h3 {
 }
 
 .green-cards > input {
-  color: green;
+  color: black;
+  background-color: #D8EAD3;
+}
+
+.green-cards > input::selection {
+  color: white;
+  background-color: green;
 }
 
 .purple-cards > i {
@@ -170,7 +183,13 @@ header > h3 {
 }
 
 .purple-cards > input {
-  color: purple;
+  color: black;
+  background-color: #D0C6DB;
+}
+
+.purple-cards > input::selection {
+  color: white;
+  background-color: purple;
 }
 
 .wonders > i {
@@ -178,7 +197,13 @@ header > h3 {
 }
 
 .wonders > input {
-  color: gold;
+  color: black;
+  background-color: #E6E7E9;
+}
+
+.wonders > input::selection {
+  color: white;
+  background-color: purple;
 }
 
 .yellow-cards > i {
@@ -186,7 +211,13 @@ header > h3 {
 }
 
 .yellow-cards > input {
-  color: gold;
+  color: black;
+  background-color: #FEFBD7;
+}
+
+.yellow-cards > input::selection {
+  color: black;
+  background-color: gold;
 }
 
 .green-coins > i {
@@ -194,7 +225,13 @@ header > h3 {
 }
 
 .green-coins > input {
-  color: green;
+  color: black;
+  background-color: #D8EAD3;
+}
+
+.green-coins > input::selection {
+  color: white;
+  background-color: green;
 }
 
 .money-coins > i {
@@ -202,7 +239,13 @@ header > h3 {
 }
 
 .money-coins > input {
-  color: gold;
+  color: black;
+  background-color: #FEFBD7;
+}
+
+.money-coins > input::selection {
+  color: black;
+  background-color: gold;
 }
 
 .military > i {
@@ -210,7 +253,13 @@ header > h3 {
 }
 
 .military > input {
-  color: red;
+  color: black;
+  background-color: #F5D0C1;
+}
+
+.military > input::selection {
+  background-color: red;
+  color: white;
 }
 
 .sum > i {
