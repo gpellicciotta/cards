@@ -26,13 +26,19 @@ body {
   right: 1rem;
 }
 
-#buttons > button {
+#reset-button {
   padding: 0.5em 0.5em;
   background-color: red;
   color: black;
   font-size: 75%;
   border: none;
   border-radius: 50%;
+  user-select: none;
+}
+
+#reset-button:active {
+  background-color: gold;
+  color: black;
 }
 
 header {
