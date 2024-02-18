@@ -1,9 +1,10 @@
-import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
-
-const playerCount = document.getElementById('player-count');
+const playerCountInput = document.getElementById('player-count');
+const addPlayerButton = document.getElementById('add-player-button');
+const resetButton = document.getElementById("reset-button");
 
 function recalculate() {
-  let players = playerCount ? Math.min(Math.max(+playerCount.value, 2), 7) : 2; 
+  let players = +(document.body.dataset.playerCount || 0);
+
   let maxPoints = 0;
   for (let i = 1; i <= players; i++) {
     let blueCardsInput = document.body.querySelector('.card > .row.blue-cards > input.player-' + i);
@@ -115,31 +116,58 @@ document.querySelectorAll("input[type=number]").forEach((el) => {
   });  
 });
 
-document.getElementById("reset-button").addEventListener("click", (e) => {
-  resetScores();
-});
-
-if (playerCount) {
-  playerCount.addEventListener("change", (e) => {
-    updatePlayerCount();
+if (resetButton) {
+  resetButton.addEventListener("click", (e) => {
+    resetScores();
   });
-  updatePlayerCount();
 }
 
-function updatePlayerCount() {
-  let players = Math.min(Math.max(+playerCount.value, 2), 7); 
-  playerCount.value = players;
-  let oldPlayerCount = +(getComputedStyle(document.body).getPropertyValue('--player-count') || '0');
-  document.body.style.setProperty('--player-count', players);
+if (playerCountInput) {
+  playerCountInput.addEventListener("change", (e) => {
+    e.preventDefault();
+
+    let cnt = Math.min(Math.max(+playerCountInput.value, 2), 7); 
+    playerCountInput.value = cnt;
+    
+    updatePlayerCount(cnt);
+  });
+}
+
+if (addPlayerButton) {
+  addPlayerButton.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    let cnt = +(document.body.dataset.playerCount || 0);
+    cnt += 1;
+
+    updatePlayerCount(cnt);
+  });
+}
+
+/* Start with 2 players */
+updatePlayerCount(2);
+
+function updatePlayerCount(playerCount) {
+  // Store for easy retrieval later
+  let oldPlayerCount = +(document.body.dataset.playerCount || 0);
+  document.body.dataset.playerCount = playerCount;
+
+  // Update other input too
+  if (playerCountInput) {
+    playerCountInput.value = playerCount;
+  }
+
+  // Update styles
+  document.body.style.setProperty('--player-count', playerCount);
   for (let i = 1; i <= 7; i++) {
-    if (i <= players) {
+    if (i <= playerCount) {
       document.body.classList.add("player-" + i);
     }
     else {
       document.body.classList.remove("player-" + i);
     }
   }
-  if (oldPlayerCount != players) {
+  if (oldPlayerCount != playerCount) {
     resetScores();
   }
 }
