@@ -113,7 +113,7 @@ header > h3 {
 
 .card > .row {
   display: grid;
-  grid-template-columns: 1.5em repeat(var(--player-count), 1fr);
+  grid-template-columns: 2em repeat(var(--player-count), 1fr);
   align-items: stretch;
   gap: 0.25rem;
 
@@ -183,6 +183,7 @@ body:not(.player-7) > .card input.player-7 {
 }
 
 .card img {
+  justify-self: center;
   align-self: center;
   text-align: center;
   object-fit: contain;
@@ -205,7 +206,8 @@ body:not(.player-7) > .card input.player-7 {
 
 .blue-cards > i {
   color: blue;
-  background-color: #C7EAFA;
+  background-color: blue;
+  height: 100%;
 }
 
 .blue-cards > input {
@@ -220,6 +222,8 @@ body:not(.player-7) > .card input.player-7 {
 
 .green-cards > i {
   color: green;
+  background-color: green;
+  height: 100%;
 }
 
 .green-cards > input {
@@ -234,6 +238,8 @@ body:not(.player-7) > .card input.player-7 {
 
 .purple-cards > i {
   color: purple;
+  background-color: purple;
+  height: 100%;  
 }
 
 .purple-cards > input {
@@ -262,6 +268,8 @@ body:not(.player-7) > .card input.player-7 {
 
 .yellow-cards > i {
   color: gold;
+  background-color: gold;
+  height: 100%;  
 }
 
 .yellow-cards > input {
@@ -304,6 +312,8 @@ body:not(.player-7) > .card input.player-7 {
 
 .military > i {
   color: red;
+  background-color: red;
+  height: 100%;
 }
 
 .military > input {

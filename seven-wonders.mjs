@@ -21,7 +21,7 @@ function recalculate() {
                        (+yellowCardsInput.value) +
                        (+purpleCardsInput.value) +
                        (+wondersInput.value) +
-                       (+greenCoinsInput.value) +
+                       (greenCoinsInput ? +greenCoinsInput.value : 0) + // Not used in full game
                        (+moneyCoinsInput.value) +
                        (+militaryInput.value);
     // Assign:
@@ -38,14 +38,16 @@ function recalculate() {
     }
   }
   // Now check/mark the winner(s):
-  for (let i = 1; i <= players; i++) {
-    let sumInput = document.body.querySelector('.card > .row.sum > input.player-' + i);
-    let nameInput = document.body.querySelector('.card > .row.players > input.player-' + i);    
-    if (+sumInput.value === maxPoints) {
-      sumInput.classList.add('winner');
-      nameInput.classList.add('winner');
-    }
-  }                 
+  if (maxPoints > 0) {
+    for (let i = 1; i <= players; i++) {
+      let sumInput = document.body.querySelector('.card > .row.sum > input.player-' + i);
+      let nameInput = document.body.querySelector('.card > .row.players > input.player-' + i);    
+      if (+sumInput.value === maxPoints) {
+        sumInput.classList.add('winner');
+        nameInput.classList.add('winner');
+      }
+    }                 
+  }
 }
 
 function resetScores() {
@@ -69,7 +71,9 @@ function resetScores() {
     wondersInput.value = 0;
 
     let greenCoinsInput = document.body.querySelector('.card > .row.green-coins > input.player-' + i);
-    greenCoinsInput.value = 0;
+    if (greenCoinsInput) { // Not used in full game
+      greenCoinsInput.value = 0;
+    }
 
     let moneyCoinsInput = document.body.querySelector('.card > .row.money-coins > input.player-' + i);
     moneyCoinsInput.value = 0;
