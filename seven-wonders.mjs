@@ -1,4 +1,8 @@
-const playerCountInput = document.getElementById('player-count');
+const MIN_PLAYER_COUNT = 2;
+const MAX_PLAYER_COUNT = 7;
+
+const playersPlus1Button = document.getElementById('players-plus-1-button');
+const playersMinus1Button = document.getElementById('players-minus-1-button');
 const addPlayerButton = document.getElementById('add-player-button');
 const resetButton = document.getElementById("reset-button");
 
@@ -52,7 +56,7 @@ function recalculate() {
 }
 
 function resetScores() {
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= MAX_PLAYER_COUNT; i++) {
     let nameInput = document.body.querySelector('.card > .row.players > input.player-' + i);  
     nameInput.classList.remove('winner');
 
@@ -122,17 +126,6 @@ if (resetButton) {
   });
 }
 
-if (playerCountInput) {
-  playerCountInput.addEventListener("change", (e) => {
-    e.preventDefault();
-
-    let cnt = Math.min(Math.max(+playerCountInput.value, 2), 7); 
-    playerCountInput.value = cnt;
-    
-    updatePlayerCount(cnt);
-  });
-}
-
 if (addPlayerButton) {
   addPlayerButton.addEventListener("click", (e) => {
     e.preventDefault();
@@ -144,22 +137,39 @@ if (addPlayerButton) {
   });
 }
 
-/* Start with 2 players */
-updatePlayerCount(2);
+if (playersPlus1Button) {
+  playersPlus1Button.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    let cnt = +(document.body.dataset.playerCount || 0);
+    cnt = Math.min(MAX_PLAYER_COUNT, cnt + 1);
+
+    updatePlayerCount(cnt);
+  });
+}
+
+if (playersMinus1Button) {
+  playersMinus1Button.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    let cnt = +(document.body.dataset.playerCount || 0);
+    cnt = Math.max(MIN_PLAYER_COUNT, cnt - 1);
+
+    updatePlayerCount(cnt);
+  });
+}
+
+/* Start with minimum number of players */
+updatePlayerCount(MIN_PLAYER_COUNT);
 
 function updatePlayerCount(playerCount) {
   // Store for easy retrieval later
   let oldPlayerCount = +(document.body.dataset.playerCount || 0);
   document.body.dataset.playerCount = playerCount;
 
-  // Update other input too
-  if (playerCountInput) {
-    playerCountInput.value = playerCount;
-  }
-
   // Update styles
   document.body.style.setProperty('--player-count', playerCount);
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= MAX_PLAYER_COUNT; i++) {
     if (i <= playerCount) {
       document.body.classList.add("player-" + i);
     }
