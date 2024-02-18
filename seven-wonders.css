@@ -18,12 +18,20 @@ body {
   align-items: center;
 
   position: relative;
+
+  --player-count: 2;
 }
 
 #buttons {
   position: fixed;
   top: 0.5rem;
   right: 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0.25rem; 
 }
 
 #reset-button {
@@ -32,13 +40,39 @@ body {
   color: black;
   font-size: 75%;
   border: none;
-  border-radius: 50%;
+  border-radius: 5%;
   user-select: none;
 }
 
 #reset-button:active {
   background-color: gold;
   color: black;
+}
+
+#player-count-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: red;
+  padding: 0.5rem;
+  border-radius: 5%;
+}
+
+#player-count-button > label {
+  background-color: red;
+  color: black;
+  font-size: 75%;
+  border: none;
+  user-select: none;
+}
+
+#player-count-button > input {
+  background-color: red;
+  color: black;
+  font-size: 75%;
+  border: none;
+  text-align: center;
 }
 
 header {
@@ -79,7 +113,7 @@ header > h3 {
 
 .card > .row {
   display: grid;
-  grid-template-columns: 1.5em 1fr 1fr;
+  grid-template-columns: 1.5em repeat(var(--player-count), 1fr);
   align-items: stretch;
   gap: 0.25rem;
 
@@ -110,6 +144,26 @@ header > h3 {
   min-width: 3em;
   max-width: 10em;
   text-align: center;
+}
+
+body:not(.player-3) > .card input.player-3 {
+  display: none !important;
+}
+
+body:not(.player-4) > .card input.player-4 {
+  display: none !important;
+}
+
+body:not(.player-5) > .card input.player-5 {
+  display: none !important;
+}
+
+body:not(.player-6) > .card input.player-6 {
+  display: none !important;
+}
+
+body:not(.player-7) > .card input.player-7 {
+  display: none !important;
 }
 
 .card input[type="number"] {
