@@ -6,6 +6,104 @@ const playersMinus1Button = document.getElementById('players-minus-1-button');
 const addPlayerButton = document.getElementById('add-player-button');
 const resetButton = document.getElementById("reset-button");
 
+if (!customElements.get("counter-input")) {
+  class CounterInput extends HTMLElement {
+    constructor() {
+      super();
+      this.value = 0;
+      this.minValue = 0;
+      this.maxValue = 10;
+    }
+
+    connectedCallback() {
+      const shadowRoot = this.attachShadow({mode: "open"});
+      
+      this.minusButton = document.createElement("button");
+      this.minusButton.classList.add("minus");
+      this.minusButton.disabled = true;
+      this.minusButton.innerText = "-";
+      shadowRoot.appendChild(this.minusButton);
+     
+      this.valueEl = document.createElement("span");
+      this.valueEl.innerText = "0";
+      shadowRoot.appendChild(this.valueEl);
+
+      this.plusButton = document.createElement("button");
+      this.plusButton.classList.add("plus");
+      this.plusButton.innerText = "+";
+      shadowRoot.appendChild(this.plusButton);
+      
+      this.plusButton.addEventListener("click", (e) => {
+        this.value = Math.min(Math.max(this.minValue, this.value + 1), this.maxValue);
+        this.#checkValue();       
+      });
+      this.minusButton.addEventListener("click", (e) => {
+        this.value = Math.min(Math.max(this.minValue, this.value - 1), this.maxValue);
+        this.#checkValue();  
+      });
+    
+      // Create some CSS to apply to the shadow dom
+      const style = document.createElement("style");
+      style.textContent = `
+        :host {
+          display: grid;
+          grid-template-columns: 1em 1fr 1em;
+          justify-content: center;
+          align-items: stretch;
+          gap: 0.5em;
+          background-color: purple;
+        }
+
+        :host > * {
+          padding: 0.25rem;
+          border: none;
+          outline: none;
+          font-size: 100%;
+        }
+
+        .plus:not(:disabled):active,
+        .minus:not(:disabled):active {
+          font-weight: bolder;
+          opacity: 50%;
+        }
+
+        .plus:disabled,
+        .minus:disabled {
+          color: #d1d1d1;
+          background-color: #dedede;
+          cursor: not-allowed;
+        }
+
+      `;
+      shadowRoot.appendChild(style);    
+    }
+
+    #checkValue() {
+      this.value = Math.min(Math.max(this.minValue, this.value), this.maxValue);
+      this.valueEl.innerText = this.value;
+      if (this.value === this.minValue) {
+        this.minusButton.disabled = true;
+        this.minusButton.setAttribute("title", "Minimum value reached");
+      }
+      else {
+        this.minusButton.disabled = false;
+        this.minusButton.setAttribute("title", "Decrement value");
+      }
+      if (this.value === this.maxValue) {
+        this.plusButton.disabled = true;
+        this.plusButton.setAttribute("title", "Maximum value reached");
+      }
+      else {
+        this.plusButton.disabled = false;
+        this.plusButton.setAttribute("title", "Increment value");
+      } 
+    }
+  };
+
+  customElements.define("counter-input", CounterInput);
+}
+
+
 function recalculate() {
   let players = +(document.body.dataset.playerCount || 0);
 
