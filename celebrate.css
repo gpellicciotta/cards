@@ -26,10 +26,18 @@ body.help {
 
 #message {
   position: fixed;
-  font-size: 500%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 96vw;
+  padding: 0 2vw;
+  font-size: 10px; /* base size; JS will adjust dynamically */
   color: rgba(255, 255, 255, 0.8);
   border: none;
   background-color: transparent;
+  text-align: center;
+  line-height: 1;
+  word-break: break-word;
 }
 
 body.help > #message {
