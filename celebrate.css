@@ -111,3 +111,43 @@ pre {
   text-wrap: wrap;
   overflow: hidden;
 }
+
+/* Audio / YouTube embed container */
+#audio-container {
+  position: fixed;
+  right: 1vw;
+  bottom: 1vh;
+  width: 320px;
+  height: 180px;
+  max-width: 40vw;
+  max-height: 30vh;
+  z-index: 9999;
+  display: none; /* shown only when music is present or playing */
+}
+
+#audio-container iframe, #audio-container audio {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Floating play button fallback when autoplay is blocked */
+#play-music {
+  position: fixed;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  width: 64px;
+  height: 64px;
+  font-size: 28px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+#play-music[hidden] { display: none; }

@@ -2,13 +2,17 @@ import * as fireworks from 'https://www.pellicciotta.com/hinolugi-support.js/js/
 import * as utils from 'https://www.pellicciotta.com/hinolugi-support.js/js/utils.mjs';
 import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
 
-const fireworksPerSecond = 0.6;
+const fireworksPerSecond = 0.9;
 
 let showHelpInfo = false;
 let targetDate = new Date(new Date().getTime() + 10000);
-let targetMessage = "Happy Birthday !";
+let targetMessage = "Let's Celebrate!";
 let targetShape = "twinkle";
 let svgPathId = null;
+// Default music (YouTube): "Let's Celebrate"
+const defaultMusic = 'https://www.youtube.com/watch?v=3GwjfUFyY6M';
+let musicUrl = null; // resolved music URL (may be YouTube or direct audio)
+let musicPlayerState = { playing: false, autoplayBlocked: false };
 
 // Fit the #message element to the visible viewport by adjusting its font-size (px).
 function fitMessageToViewport(el) {
@@ -122,6 +126,13 @@ let shapeParam = url.searchParams.get("shape");
 if (shapeParam) {
   targetShape = shapeParam.trim();
 }
+let musicParam = url.searchParams.get("music");
+if (musicParam) {
+  musicUrl = musicParam.trim();
+} else {
+  // no explicit music param: keep default as null (user can enable)
+  musicUrl = null;
+}
 
 // Run:
 if (showHelpInfo) {
@@ -150,6 +161,10 @@ function updateCountdownAndStartFireworks() {
   if (secondsUntil < 1) {
     message.innerHTML = targetMessage;
     fitMessageToViewport(message);
+    // Start fireworks and try to play background music (if provided)
+    if (musicUrl) {
+      tryPlayMusic(musicUrl);
+    }
     fireworks.start(canvas, { 
       shape: targetShape,
       frequency: fireworksPerSecond,
@@ -184,3 +199,95 @@ function updateCountdownAndStartFireworks() {
     setTimeout(updateCountdownAndStartFireworks, 1000);
   }
 }
+
+// --- Music playback helpers ---
+function extractYouTubeId(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
+    if (u.hostname.includes('youtube.com')) return u.searchParams.get('v');
+  } catch (e) { return null; }
+  return null;
+}
+
+function showPlayButton(show) {
+  const btn = document.getElementById('play-music');
+  if (!btn) return;
+  if (show) btn.hidden = false;
+  else btn.hidden = true;
+}
+
+async function tryPlayMusic(url) {
+  const container = document.getElementById('audio-container');
+  const ytId = extractYouTubeId(url);
+  if (!container) return;
+
+  // If it's a YouTube URL, embed player
+  if (ytId) {
+    container.style.display = 'block';
+    container.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
+    iframe.allow = 'autoplay; encrypted-media';
+    iframe.setAttribute('allowfullscreen', '');
+    container.appendChild(iframe);
+
+    // Autoplay may be blocked; detect via promise from postMessage is complex — show play button as fallback
+    setTimeout(() => {
+      // show fallback play button so user can manually start if autoplay blocked
+      showPlayButton(true);
+      musicPlayerState.autoplayBlocked = true;
+    }, 1000);
+    return;
+  }
+
+  // Treat as direct audio file
+  container.style.display = 'block';
+  container.innerHTML = '';
+  const audio = document.createElement('audio');
+  audio.id = 'bg-audio';
+  audio.src = url;
+  audio.loop = true;
+  audio.preload = 'auto';
+  audio.crossOrigin = 'anonymous';
+  container.appendChild(audio);
+
+  try {
+    await audio.play();
+    musicPlayerState.playing = true;
+    showPlayButton(false);
+  } catch (err) {
+    // Autoplay blocked; show play button so user can start playback
+    musicPlayerState.autoplayBlocked = true;
+    showPlayButton(true);
+  }
+}
+
+// Hook play button to start music when clicked by user
+document.addEventListener('click', (e) => {
+  const btn = document.getElementById('play-music');
+  if (!btn) return;
+  if (e.target === btn) {
+    // Try to start any audio or send play to YouTube iframe by re-creating embed with autoplay=1
+    const container = document.getElementById('audio-container');
+    if (!container) return;
+    const audioEl = container.querySelector('audio');
+    if (audioEl) {
+      audioEl.play().catch(()=>{});
+      btn.hidden = true;
+      return;
+    }
+    // For YouTube, recreate iframe with autoplay param to hint start
+    const iframe = container.querySelector('iframe');
+    if (iframe) {
+      const src = iframe.src;
+      iframe.remove();
+      const newIframe = document.createElement('iframe');
+      newIframe.src = src + '&autoplay=1';
+      newIframe.allow = 'autoplay; encrypted-media';
+      newIframe.setAttribute('allowfullscreen', '');
+      container.appendChild(newIframe);
+      btn.hidden = true;
+    }
+  }
+});

@@ -10,8 +10,10 @@
     <script defer type="module" src="celebrate.mjs"></script>
   </head>
   <body>
-    <p id="message">!!! Congratulations !!!</p>
+    <p id="message">Let's Celebrate!</p>
     <canvas id="fireworks"></canvas>
+    <div id="audio-container" aria-hidden="true"></div>
+    <button id="play-music" aria-label="Play background music" hidden>▶</button>
     <div id="help">
       <h1>Celebration Card</h1>
       <p>This digital card first counts down until a target date, and then shows a chosen message, while launching fireworks and optionally playing music in the background.</p>
@@ -24,7 +26,7 @@
         </li>
         <li>
           <b>message</b>
-          <p>A custom message to be shown instead of the standard <q>Congratulations!</q>.</p>
+          <p>A custom message to be shown instead of the standard <q>Let's Celebrate!</q>.</p>
         </li>
         <li>
           <b>shape</b>
@@ -35,6 +37,10 @@
           <b>svg-path-id</b>
           <p>Only relevant when <q>shape<q> is set to <q>svg-path-id</q>: then it should be the HTML ID of a valid SVG &lt;path&gt; element (just the name, without any #-prefix).</p>
         </li>
+        <li>
+          <b>music</b>
+          <p>Optional URL to play as background music after the countdown. Accepts a YouTube link (for example <q>https://www.youtube.com/watch?v=3GwjfUFyY6M</q>) or a direct audio file URL (for example <q>https://example.com/song.mp3</q>). The player will try to autoplay; if the browser blocks autoplay a visible play button will appear so the recipient can start the music manually.</p>
+        </li>
       </ul>
       <p>Parameters should be separated from the main URL by a question mark, and an &amp;-sign should be used between parameters.</p>
       <p>For each individual parameter, the parameter name and value should be separated by a colon.</p>
@@ -42,15 +48,15 @@
       <p>Following are example URLs, with the <span class="param-name">parameter names (blue)</span>, <span class="param-value">values (green)</span> and <span class="separator">separators (yellow)</span> all highlighted in a different color.</p>
       <ul>
         <li>
-          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">help</span></b>
+          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">help</span></b>
           <p>Asking to show this help text.</p>
         </li>
         <li>
-          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">donut</span><span class="separator">&amp;</span><span class="param-name">date</span><span class="separator">=</span><span class="param-value">2024-07-16T12:00</span></b>
+          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">donut</span><span class="separator">&amp;</span><span class="param-name">date</span><span class="separator">=</span><span class="param-value">2024-07-16T12:00</span></b>
           <p>Asking to target 16 July 2024, at noon while showing donuts-style fireworks.</p>
         </li>
         <li>
-          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">svg-path</span><span class="separator">&amp;</span><span class="param-name">svg-path-id</span><span class="separator">=</span><span class="param-value">rabbit-path</span></b>
+          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">svg-path</span><span class="separator">&amp;</span><span class="param-name">svg-path-id</span><span class="separator">=</span><span class="param-value">rabbit-path</span></b>
           <p>Asking to show the default "Happy Birthday" text after 10 seconds, while using fireworks in the shape of the SVG path that is available in the current HTML document, with ID <q>rabbit-path</q>.<br/>
              The following type of HTML is then needed in the current document:
 <pre>
@@ -61,9 +67,13 @@
           </p>
         </li>
         <li>
-          <b>https://www.pellicciotta.com/cards/happy-birthday.html<span class="separator">?</span><span class="param-name">message</span><span class="separator">=</span><span class="param-value">Duck, there is a bomb!</span></b>
+          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">message</span><span class="separator">=</span><span class="param-value">Duck, there is a bomb!</span></b>
           <p>Asking to show the custom warning message after 10 seconds.</p>
         </li>        
+        <li>
+          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">message</span><span class="separator">=</span><span class="param-value">Party</span><span class="separator">&amp;</span><span class="param-name">music</span><span class="separator">=</span><span class="param-value">https://www.youtube.com/watch?v=3GwjfUFyY6M</span></b>
+          <p>Show the custom message and attempt to play the specified YouTube track after the countdown (a play button will appear if autoplay is blocked).</p>
+        </li>
     </div>
   </body>
 </html>
