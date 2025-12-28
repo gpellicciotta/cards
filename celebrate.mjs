@@ -206,74 +206,23 @@ function updateCountdownAndStartFireworks() {
   }
 }
 
-// --- Music playback helpers ---
-function extractYouTubeId(url) {
-  try {
-    const u = new URL(url);
-    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
-    if (u.hostname.includes('youtube.com') || u.hostname.includes('youtube-nocookie.com')) return u.searchParams.get('v');
-  } catch (e) { return null; }
-  return null;
-}
-
-function showPlayButton(show) {
-  const btn = document.getElementById('play-music');
-  if (!btn) return;
-  if (show) btn.hidden = false;
-  else btn.hidden = true;
-}
-
 async function tryPlayMusic(url) {
-  const container = document.getElementById('audio-container');
-  const ytId = extractYouTubeId(url);
-  if (!container) return;
+  const audio = document.getElementById('music');
+  if (!audio) return;
 
-  // If it's a YouTube URL, embed player
-  if (ytId) {
-    // Use a muted autoplay attempt to increase chance browsers will allow it,
-    // then unmute on user gesture. YouTube Music (music.youtube.com) is not
-    // embeddable; prefer standard youtube.com watch URLs.
-    container.style.display = 'block';
-    container.innerHTML = '';
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1`;
-    iframe.allow = 'autoplay; encrypted-media';
-    iframe.setAttribute('allowfullscreen', '');
-    container.appendChild(iframe);
-    // Provide a fallback link in case embedding is blocked by the video owner or extensions
-    const ytLink = document.createElement('div');
-    ytLink.className = 'yt-fallback';
-    ytLink.innerHTML = `<a href="https://www.youtube.com/watch?v=${ytId}" target="_blank" rel="noopener">Open on YouTube</a>`;
-    container.appendChild(ytLink);
-    musicPlayerState.ytId = ytId;
-
-    // If autoplay with mute didn't start for some reason, show play button
-    setTimeout(() => {
-      showPlayButton(true);
-      musicPlayerState.autoplayBlocked = true;
-    }, 1000);
-    return;
-  }
-
-  // Treat as direct audio file
-  container.style.display = 'block';
-  container.innerHTML = '';
-  const audio = document.createElement('audio');
-  audio.id = 'bg-audio';
+  audio.innerHTML = '';
   audio.src = url;
   audio.loop = true;
   audio.preload = 'auto';
   audio.crossOrigin = 'anonymous';
-  container.appendChild(audio);
 
   try {
     await audio.play();
     musicPlayerState.playing = true;
-    showPlayButton(false);
-  } catch (err) {
+  } 
+  catch (err) {
     // Autoplay blocked; show play button so user can start playback
     musicPlayerState.autoplayBlocked = true;
-    showPlayButton(true);
   }
 }
 

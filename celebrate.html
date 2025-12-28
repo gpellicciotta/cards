@@ -1,79 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Celebrate</title>
-    <meta charset="utf-8">
-    <link  type="image/x-icon" rel="icon" href="favicon.ico">
-    <link type='text/css'  rel='preload' as='style' onload='this.rel="stylesheet"' href='https://fonts.googleapis.com/css?family=Roboto&display=swap'>
-    <link rel="stylesheet" href="celebrate.css">
-    <script defer src="https://kit.fontawesome.com/1c60ca333d.js" crossorigin="anonymous"></script>
-    <script defer type="module" src="celebrate.mjs"></script>
-  </head>
-  <body>
-    <p id="message">Let's Celebrate!</p>
-    <canvas id="fireworks"></canvas>
-    <div id="audio-container" aria-hidden="true"></div>
-    <button id="play-music" aria-label="Play background music" hidden>▶</button>
-    <div id="help">
-      <h1>Celebration Card</h1>
-      <p>This digital card first counts down until a target date, and then shows a chosen message, while launching fireworks and optionally playing music in the background.</p>
-      <h2>Configuration</h2>
-      <p>The card experience can be tweaked by using following query parameters:</p>
-      <ul>
-        <li>
-          <b>date</b>
-          <p>The target date to count down to. Should be provided as a number of seconds from now, or as a date in ISO form, e.g. 2024-07-16T12:00.<br/>If none is provided, 10 seconds from now will be assumed.</p>
-        </li>
-        <li>
-          <b>message</b>
-          <p>A custom message to be shown instead of the standard <q>Let's Celebrate!</q>.</p>
-        </li>
-        <li>
-          <b>shape</b>
-          <p>The shape of exploding fireworks.<br/>
-             Following shapes can be used: <q>normal</q>, <q>heart</q>, <q>circle</q>, <q>donut</q>, <q>rose</q>, <q>twinkle</q>, <q>star</q>, <q>eagle</q>, <q>skull</q>, <q>rabbit</q>, <q>umbrella</q>, <q>svg-path</q> and <q>random</q>.</p>
-        </li>
-        <li>
-          <b>svg-path-id</b>
-          <p>Only relevant when <q>shape<q> is set to <q>svg-path-id</q>: then it should be the HTML ID of a valid SVG &lt;path&gt; element (just the name, without any #-prefix).</p>
-        </li>
-        <li>
-          <b>music</b>
-          <p>Optional URL to play as background music after the countdown. Accepts a YouTube link (for example <q>https://www.youtube.com/watch?v=3GwjfUFyY6M</q>) or a direct audio file URL (for example <q>https://example.com/song.mp3</q>). The player will try to autoplay; if the browser blocks autoplay a visible play button will appear so the recipient can start the music manually.</p>
-        </li>
-      </ul>
-      <p>Parameters should be separated from the main URL by a question mark, and an &amp;-sign should be used between parameters.</p>
-      <p>For each individual parameter, the parameter name and value should be separated by a colon.</p>
-      <h3>Examples</h3>
-      <p>Following are example URLs, with the <span class="param-name">parameter names (blue)</span>, <span class="param-value">values (green)</span> and <span class="separator">separators (yellow)</span> all highlighted in a different color.</p>
-      <ul>
-        <li>
-          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">help</span></b>
-          <p>Asking to show this help text.</p>
-        </li>
-        <li>
-          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">donut</span><span class="separator">&amp;</span><span class="param-name">date</span><span class="separator">=</span><span class="param-value">2024-07-16T12:00</span></b>
-          <p>Asking to target 16 July 2024, at noon while showing donuts-style fireworks.</p>
-        </li>
-        <li>
-          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">shape</span><span class="separator">=</span><span class="param-value">svg-path</span><span class="separator">&amp;</span><span class="param-name">svg-path-id</span><span class="separator">=</span><span class="param-value">rabbit-path</span></b>
-          <p>Asking to show the default "Happy Birthday" text after 10 seconds, while using fireworks in the shape of the SVG path that is available in the current HTML document, with ID <q>rabbit-path</q>.<br/>
-             The following type of HTML is then needed in the current document:
-<pre>
+
+<head>
+  <title>Celebrate</title>
+  <meta charset="utf-8">
+  <link type="image/x-icon" rel="icon" href="favicon.ico">
+  <link type='text/css' rel='preload' as='style' onload='this.rel="stylesheet"'
+    href='https://fonts.googleapis.com/css?family=Roboto&display=swap'>
+  <link rel="stylesheet" href="celebrate.css">
+  <script defer src="https://kit.fontawesome.com/1c60ca333d.js" crossorigin="anonymous"></script>
+  <script defer type="module" src="celebrate.mjs"></script>
+</head>
+
+<body>
+  <p id="message">Let's Celebrate!</p>
+
+  <canvas id="fireworks"></canvas>
+  
+  <audio id="music" autoplay loop nocontrols>
+    <source src="media/fireworks-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="help">
+    <h1>Celebration Card</h1>
+    <p>This digital card first counts down until a target date, 
+       and then shows a chosen message, while launching
+       fireworks and optionally playing music in the background.</p>
+    <h2>Configuration</h2>
+    <p>The card experience can be tweaked by using following query parameters:</p>
+    <ul>
+      <li>
+        <b>date</b>
+        <p>The target date to count down to. Should be provided as a number of seconds from now, or as a date in ISO
+          form, e.g. 2024-07-16T12:00.<br />If none is provided, 10 seconds from now will be assumed.</p>
+      </li>
+      <li>
+        <b>message</b>
+        <p>A custom message to be shown instead of the standard <q>Let's Celebrate!</q>.</p>
+      </li>
+      <li>
+        <b>shape</b>
+        <p>The shape of exploding fireworks.<br />
+          Following shapes can be used: <q>normal</q>, <q>heart</q>, <q>circle</q>, <q>donut</q>, <q>rose</q>,
+          <q>twinkle</q>, <q>star</q>, <q>eagle</q>, <q>skull</q>, <q>rabbit</q>, <q>umbrella</q>, <q>svg-path</q> and
+          <q>random</q>.</p>
+      </li>
+      <li>
+        <b>svg-path-id</b>
+        <p>Only relevant when <q>shape<q> is set to <q>svg-path-id</q>: then it should be the HTML ID of a valid SVG
+              &lt;path&gt; element (just the name, without any #-prefix).</p>
+      </li>
+      <li>
+        <b>music</b>
+        <p>Optional URL to play as background music after the countdown. Only accepts direct audio file URLs (for example
+          <q>https://example.com/song.mp3</q>).</p>
+      </li>
+    </ul>
+    <p>Parameters should be separated from the main URL by a question mark, and an &amp;-sign should be used between
+      parameters.</p>
+    <p>For each individual parameter, the parameter name and value should be separated by a colon.</p>
+    <h3>Examples</h3>
+    <p>Following are example URLs, with the <span class="param-name">parameter names (blue)</span>, <span
+        class="param-value">values (green)</span> and <span class="separator">separators (yellow)</span> all highlighted
+      in a different color.</p>
+    <ul>
+      <li>
+        <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span 
+            class="param-name">help</span></b>
+        <p>Asking to show this help text.</p>
+      </li>
+      <li>
+        <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span
+            class="param-name">shape</span><span class="separator">=</span><span class="param-value">donut</span><span
+            class="separator">&amp;</span><span class="param-name">date</span><span class="separator">=</span><span
+            class="param-value">2024-07-16T12:00</span></b>
+        <p>Asking to target 16 July 2024, at noon while showing donuts-style fireworks.</p>
+      </li>
+      <li>
+        <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span
+            class="param-name">shape</span><span class="separator">=</span><span
+            class="param-value">svg-path</span><span class="separator">&amp;</span><span
+            class="param-name">svg-path-id</span><span class="separator">=</span><span
+            class="param-value">rabbit-path</span></b>
+        <p>Asking to show the default "Happy Birthday" text after 10 seconds, while using fireworks in the shape of the
+          SVG path that is available in the current HTML document, with ID <q>rabbit-path</q>.<br />
+          The following type of HTML is then needed in the current document:
+        <pre>
  &lt;svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"&gt;
    &lt;path <span class="param-value">id="rabbit-path"</span> d="m-18.36611,64.65913c-6.32984,-2.2862 1.93011,-6.85709 5.05727,-8.87904c2.10641,-1.55716 -12.07198,0.21844 -6.08599,-5.1871c6.56751,-4.41603 4.08665,-11.88697 -2.47801,-15.35974c-9.03435,-4.88571 -20.62599,-9.0672 -23.96361,-18.19016c-3.37483,-5.68229 4.62864,-11.66689 -0.51915,-16.79814c-4.1435,-6.66239 0.69729,-13.60986 3.70619,-19.78153c1.38372,-8.53725 -7.09269,-15.28859 -11.7542,-22.30241c-5.772,-6.70257 -9.09925,-14.5126 -9.57736,-22.65159c-1.25526,-3.47406 0.13389,-8.86919 5.14637,-4.18545c10.49688,6.73188 22.02069,13.11962 29.36728,22.33394c1.39063,3.32829 6.95899,12.97461 7.26993,4.23931c0.14563,-12.00606 4.724,-25.10046 16.45573,-33.14604c7.97971,-5.82359 12.28314,4.37328 12.65547,9.55494c2.07697,10.19534 -1.36586,20.30567 -5.20237,29.93655c-1.40842,4.47578 -5.07631,16.74105 5.38456,12.21864c24.0981,-7.45161 53.29473,0.37459 68.99119,16.38222c7.21553,7.7507 10.37546,17.70854 10.30412,27.26976c-3.71543,5.61717 10.08939,-0.10523 5.08719,6.37529c-2.94474,7.17887 -11.26479,11.07421 -17.09274,16.49278c-5.93042,4.34197 -1.53023,13.6253 -11.33742,14.99319c-14.30988,3.53318 -29.33643,5.08084 -44.23352,5.98169c-8.33637,1.36789 -12.38205,-6.26685 -4.39194,-9.4408c3.83068,-4.7297 14.79014,-5.06115 18.04641,-5.81042c-7.78143,0.60979 -17.37787,-1.93397 -23.93487,1.92582c-3.971,5.16309 -7.15142,11.95884 -15.47866,13.43254c-3.74224,0.83244 -7.58993,1.5 -11.42188,0.59576l-0.00001,0z" fill="none" stroke="#000000" stroke-width="5"/&gt;
  &lt;/svg&gt;               
 </pre>
-          </p>
-        </li>
-        <li>
-          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">message</span><span class="separator">=</span><span class="param-value">Duck, there is a bomb!</span></b>
-          <p>Asking to show the custom warning message after 10 seconds.</p>
-        </li>        
-        <li>
-          <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span class="param-name">message</span><span class="separator">=</span><span class="param-value">Party</span><span class="separator">&amp;</span><span class="param-name">music</span><span class="separator">=</span><span class="param-value">https://www.youtube.com/watch?v=3GwjfUFyY6M</span></b>
-          <p>Show the custom message and attempt to play the specified YouTube Music track after the countdown (a play button will appear if autoplay is blocked).</p>
-        </li>
-    </div>
-  </body>
+        </p>
+      </li>
+      <li>
+        <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span
+            class="param-name">message</span><span class="separator">=</span><span class="param-value">Duck, there is a
+            bomb!</span></b>
+        <p>Asking to show the custom warning message after 10 seconds.</p>
+      </li>
+      <li>
+        <b>https://www.pellicciotta.com/cards/celebrate.html<span class="separator">?</span><span
+            class="param-name">message</span><span class="separator">=</span><span class="param-value">Party</span><span
+            class="separator">&amp;</span><span class="param-name">music</span><span class="separator">=</span><span
+            class="param-value">https://www.youtube.com/watch?v=3GwjfUFyY6M</span></b>
+        <p>Show the custom message and attempt to play the specified YouTube Music track after the countdown (a play
+          button will appear if autoplay is blocked).</p>
+      </li>
+  </div>
+</body>
+
 </html>
