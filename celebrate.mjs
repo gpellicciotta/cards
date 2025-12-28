@@ -41,6 +41,64 @@ function fitMessageToViewport(el) {
 
 window.addEventListener('resize', () => fitMessageToViewport(document.getElementById('message')));
 
+// Parse a date parameter following the help text: accept ISO-like forms
+// Examples supported: YYYY-MM-DD, YYYY-MM-DDTHH:MM, YYYY-MM-DDTHH:MM:SS,
+// and any ISO string with timezone (Z or ±hh:mm). Dates without timezone
+// are interpreted in the local timezone.
+function parseDateParam(s) {
+  if (!s || typeof s !== 'string') throw new Error('empty');
+  const v = s.trim();
+
+  // YYYY-MM-DD
+  const reDateOnly = /^(\d{4})-(\d{2})-(\d{2})$/;
+  const mDateOnly = v.match(reDateOnly);
+  if (mDateOnly) {
+    const y = Number(mDateOnly[1]);
+    const mo = Number(mDateOnly[2]) - 1;
+    const d = Number(mDateOnly[3]);
+    const dt = new Date(y, mo, d, 0, 0, 0, 0);
+    if (isNaN(dt.getTime())) throw new Error('invalid');
+    return dt;
+  }
+
+  // YYYY-MM-DDTHH:MM or YYYY-MM-DDTHH:MM:SS with optional timezone
+  const reDateTime = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?(Z|[+\-]\d{2}:?\d{2})?$/;
+  const mDateTime = v.match(reDateTime);
+  if (mDateTime) {
+    const y = Number(mDateTime[1]);
+    const mo = Number(mDateTime[2]) - 1;
+    const d = Number(mDateTime[3]);
+    const hh = Number(mDateTime[4]);
+    const mm = Number(mDateTime[5]);
+    const ss = mDateTime[6] ? Number(mDateTime[6]) : 0;
+    const tz = mDateTime[7];
+    if (tz) {
+      // timezone present -> let Date parse full ISO string
+      const dt = new Date(v);
+      if (isNaN(dt.getTime())) throw new Error('invalid');
+      return dt;
+    }
+    // no timezone -> interpret as local time
+    const dt = new Date(y, mo, d, hh, mm, ss, 0);
+    if (isNaN(dt.getTime())) throw new Error('invalid');
+    return dt;
+  }
+
+  // If the parameter is a plain integer number, treat it as seconds from now
+  const reNumber = /^\+?\d+$/;
+  if (reNumber.test(v)) {
+    const seconds = Number(v);
+    const dt = new Date(Date.now() + (seconds * 1000));
+    return dt;
+  }
+
+    // Fallback: try Date.parse for other acceptable forms
+  const parsed = Date.parse(v);
+  if (!isNaN(parsed)) return new Date(parsed);
+
+  throw new Error('invalid');
+}
+
 // Check URL params:
 const url = new URL(window.location.href);
 let helpParam = url.searchParams.get("help");
@@ -50,10 +108,10 @@ if (helpParam != null) {
 let dateParam = url.searchParams.get("date");
 if (dateParam) {
   try {
-    targetDate = utils.date(dateParam);
+    targetDate = parseDateParam(dateParam);
   }
-  catch {
-    log.error(`Failed to interpret '${dateParam}' as a valid date: using current date instead`);
+  catch (e) {
+    log.error(`Failed to interpret '${dateParam}' as a valid date: using default (10 seconds from now)`);
   }
 }
 let messageParam = url.searchParams.get("message");
