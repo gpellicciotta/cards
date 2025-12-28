@@ -3,16 +3,15 @@ import * as utils from 'https://www.pellicciotta.com/hinolugi-support.js/js/util
 import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
 
 const fireworksPerSecond = 0.9;
+const defaultMusic = 'https://www.youtube.com/watch?v=3GwjfUFyY6M'; // Default music (YouTube): "Let's Celebrate"
 
 let showHelpInfo = false;
 let targetDate = new Date(new Date().getTime() + 10000);
 let targetMessage = "Let's Celebrate!";
 let targetShape = "twinkle";
 let svgPathId = null;
-// Default music (YouTube): "Let's Celebrate"
-const defaultMusic = 'https://www.youtube.com/watch?v=3GwjfUFyY6M';
-let musicUrl = null; // resolved music URL (may be YouTube or direct audio)
-let musicPlayerState = { playing: false, autoplayBlocked: false };
+let musicUrl = null; // Resolved music URL (may be YouTube music or direct audio)
+let musicPlayerState = { playing: false, autoplayBlocked: false, ytId: null };
 
 // Fit the #message element to the visible viewport by adjusting its font-size (px).
 function fitMessageToViewport(el) {
@@ -77,12 +76,12 @@ function parseDateParam(s) {
     const ss = mDateTime[6] ? Number(mDateTime[6]) : 0;
     const tz = mDateTime[7];
     if (tz) {
-      // timezone present -> let Date parse full ISO string
+      // Timezone present -> let Date parse full ISO string
       const dt = new Date(v);
       if (isNaN(dt.getTime())) throw new Error('invalid');
       return dt;
     }
-    // no timezone -> interpret as local time
+    // No timezone -> interpret as local time
     const dt = new Date(y, mo, d, hh, mm, ss, 0);
     if (isNaN(dt.getTime())) throw new Error('invalid');
     return dt;
@@ -96,7 +95,7 @@ function parseDateParam(s) {
     return dt;
   }
 
-    // Fallback: try Date.parse for other acceptable forms
+  // Fallback: try Date.parse for other acceptable forms
   const parsed = Date.parse(v);
   if (!isNaN(parsed)) return new Date(parsed);
 
@@ -129,8 +128,9 @@ if (shapeParam) {
 let musicParam = url.searchParams.get("music");
 if (musicParam) {
   musicUrl = musicParam.trim();
-} else {
-  // no explicit music param: keep default as null (user can enable)
+} 
+else {
+  // No explicit music param: keep default as null (user can enable)
   musicUrl = null;
 }
 
@@ -224,17 +224,20 @@ async function tryPlayMusic(url) {
 
   // If it's a YouTube URL, embed player
   if (ytId) {
+    // Use a muted autoplay attempt to increase chance browsers will allow it,
+    // then unmute on user gesture. YouTube Music (music.youtube.com) is not
+    // embeddable; prefer standard youtube.com watch URLs.
     container.style.display = 'block';
     container.innerHTML = '';
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
+    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1`;
     iframe.allow = 'autoplay; encrypted-media';
     iframe.setAttribute('allowfullscreen', '');
     container.appendChild(iframe);
+    musicPlayerState.ytId = ytId;
 
-    // Autoplay may be blocked; detect via promise from postMessage is complex — show play button as fallback
+    // If autoplay with mute didn't start for some reason, show play button
     setTimeout(() => {
-      // show fallback play button so user can manually start if autoplay blocked
       showPlayButton(true);
       musicPlayerState.autoplayBlocked = true;
     }, 1000);
@@ -277,17 +280,17 @@ document.addEventListener('click', (e) => {
       btn.hidden = true;
       return;
     }
-    // For YouTube, recreate iframe with autoplay param to hint start
+    // For YouTube, recreate iframe without mute so playback is audible after user gesture
     const iframe = container.querySelector('iframe');
-    if (iframe) {
-      const src = iframe.src;
+    if (iframe && musicPlayerState.ytId) {
       iframe.remove();
       const newIframe = document.createElement('iframe');
-      newIframe.src = src + '&autoplay=1';
+      newIframe.src = `https://www.youtube.com/embed/${musicPlayerState.ytId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
       newIframe.allow = 'autoplay; encrypted-media';
       newIframe.setAttribute('allowfullscreen', '');
       container.appendChild(newIframe);
       btn.hidden = true;
+      musicPlayerState.autoplayBlocked = false;
     }
   }
 });
