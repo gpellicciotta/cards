@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -31,7 +33,8 @@ body.help {
   transform: translate(-50%, -50%);
   max-width: 96vw;
   padding: 0 2vw;
-  font-size: 10px; /* base size; JS will adjust dynamically */
+  font-size: 10px;
+  /* base size; JS will adjust dynamically */
   color: rgba(255, 255, 255, 0.8);
   border: none;
   background-color: transparent;
@@ -40,12 +43,12 @@ body.help {
   word-break: normal;
 }
 
-body.help > #message {
+body.help>#message {
   display: none;
   position: relative;
 }
 
-body.help > #fireworks {
+body.help>#fireworks {
   display: none;
 }
 
@@ -56,11 +59,13 @@ body.help > #fireworks {
 }
 
 #help {
-  display: none;  
+  display: none;
   padding: 0 2em;
 }
 
-#help h1, #help h2, #help h3 {
+#help h1,
+#help h2,
+#help h3 {
   padding-top: 1em;
   padding-bottom: 0.25em;
 }
@@ -73,7 +78,8 @@ body.help > #fireworks {
   padding: 0.5em 1em;
 }
 
-#help ul, #help ul li {
+#help ul,
+#help ul li {
   display: flex;
   flex-direction: column;
 }
@@ -122,10 +128,12 @@ pre {
   max-width: 40vw;
   max-height: 30vh;
   z-index: 9999;
-  display: none; /* shown only when music is present or playing */
+  display: none;
+  /* shown only when music is present or playing */
 }
 
-#audio-container iframe, #audio-container audio {
+#audio-container iframe,
+#audio-container audio {
   width: 100%;
   height: 100%;
   border: none;
@@ -138,7 +146,7 @@ pre {
   top: 70%;
   transform: translate(-50%, -50%);
   z-index: 10000;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   color: white;
   border: none;
   border-radius: 999px;
@@ -150,4 +158,25 @@ pre {
   cursor: pointer;
 }
 
-#play-music[hidden] { display: none; }
+#play-music[hidden] {
+  display: none;
+}
+
+/* YouTube fallback link styling */
+.yt-fallback {
+  margin-top: 0.4rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.yt-fallback a {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.yt-fallback a:hover {
+  opacity: 0.9;
+}

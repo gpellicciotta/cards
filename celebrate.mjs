@@ -2,7 +2,7 @@ import * as fireworks from 'https://www.pellicciotta.com/hinolugi-support.js/js/
 import * as utils from 'https://www.pellicciotta.com/hinolugi-support.js/js/utils.mjs';
 import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
 
-const fireworksPerSecond = 0.9;
+const fireworksPerSecond = 1.6;
 const defaultMusic = 'https://www.youtube.com/watch?v=3GwjfUFyY6M'; // Default music (YouTube): "Let's Celebrate"
 
 let showHelpInfo = false;
@@ -126,12 +126,18 @@ if (shapeParam) {
   targetShape = shapeParam.trim();
 }
 let musicParam = url.searchParams.get("music");
-if (musicParam) {
+let nomusicParam = url.searchParams.get("nomusic");
+if (nomusicParam != null) {
+  // Explicitly disable music when `nomusic` is present
+  musicUrl = null;
+} 
+else if (musicParam) {
+  // User provided music URL
   musicUrl = musicParam.trim();
 } 
 else {
-  // No explicit music param: keep default as null (user can enable)
-  musicUrl = null;
+  // No music param and `nomusic` not present: use default track
+  musicUrl = defaultMusic;
 }
 
 // Run:
@@ -165,7 +171,7 @@ function updateCountdownAndStartFireworks() {
     if (musicUrl) {
       tryPlayMusic(musicUrl);
     }
-    fireworks.start(canvas, { 
+    fireworks.start(canvas, {
       shape: targetShape,
       frequency: fireworksPerSecond,
       svgPathId: svgPathId
@@ -177,16 +183,16 @@ function updateCountdownAndStartFireworks() {
       message.innerHTML = `${secondsUntil}`;
       fitMessageToViewport(message);
     }
-    else if (secondsUntil <= (2*60)) { // Less than 2 minutes
+    else if (secondsUntil <= (2 * 60)) { // Less than 2 minutes
       message.innerHTML = `${secondsUntil} secs`;
       fitMessageToViewport(message);
     }
-    else if (secondsUntil <= (2*60*60)) { // Less than 2 hours
+    else if (secondsUntil <= (2 * 60 * 60)) { // Less than 2 hours
       let minutesUntil = Math.floor(secondsUntil / 60);
       message.innerHTML = `${minutesUntil} mins`;
       fitMessageToViewport(message);
     }
-    else if (secondsUntil <= (2*3600*24)) { // Less than 2 days
+    else if (secondsUntil <= (2 * 3600 * 24)) { // Less than 2 days
       let hoursUntil = Math.floor(secondsUntil / 3600);
       message.innerHTML = `${hoursUntil} hrs`;
       fitMessageToViewport(message);
@@ -205,7 +211,7 @@ function extractYouTubeId(url) {
   try {
     const u = new URL(url);
     if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
-    if (u.hostname.includes('youtube.com')) return u.searchParams.get('v');
+    if (u.hostname.includes('youtube.com') || u.hostname.includes('youtube-nocookie.com')) return u.searchParams.get('v');
   } catch (e) { return null; }
   return null;
 }
@@ -230,10 +236,15 @@ async function tryPlayMusic(url) {
     container.style.display = 'block';
     container.innerHTML = '';
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1`;
+    iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1`;
     iframe.allow = 'autoplay; encrypted-media';
     iframe.setAttribute('allowfullscreen', '');
     container.appendChild(iframe);
+    // Provide a fallback link in case embedding is blocked by the video owner or extensions
+    const ytLink = document.createElement('div');
+    ytLink.className = 'yt-fallback';
+    ytLink.innerHTML = `<a href="https://www.youtube.com/watch?v=${ytId}" target="_blank" rel="noopener">Open on YouTube</a>`;
+    container.appendChild(ytLink);
     musicPlayerState.ytId = ytId;
 
     // If autoplay with mute didn't start for some reason, show play button
@@ -276,7 +287,7 @@ document.addEventListener('click', (e) => {
     if (!container) return;
     const audioEl = container.querySelector('audio');
     if (audioEl) {
-      audioEl.play().catch(()=>{});
+      audioEl.play().catch(() => { });
       btn.hidden = true;
       return;
     }
@@ -284,11 +295,18 @@ document.addEventListener('click', (e) => {
     const iframe = container.querySelector('iframe');
     if (iframe && musicPlayerState.ytId) {
       iframe.remove();
+      // remove existing fallback link (if any)
+      const existing = container.querySelector('.yt-fallback');
+      if (existing) existing.remove();
       const newIframe = document.createElement('iframe');
-      newIframe.src = `https://www.youtube.com/embed/${musicPlayerState.ytId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
+      newIframe.src = `https://www.youtube-nocookie.com/embed/${musicPlayerState.ytId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
       newIframe.allow = 'autoplay; encrypted-media';
       newIframe.setAttribute('allowfullscreen', '');
       container.appendChild(newIframe);
+      const newLink = document.createElement('div');
+      newLink.className = 'yt-fallback';
+      newLink.innerHTML = `<a href="https://www.youtube.com/watch?v=${musicPlayerState.ytId}" target="_blank" rel="noopener">Open on YouTube</a>`;
+      container.appendChild(newLink);
       btn.hidden = true;
       musicPlayerState.autoplayBlocked = false;
     }
