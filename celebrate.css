@@ -1,0 +1,105 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: rgb(29, 29, 29);
+  color: white;
+  font-size: 200%;
+
+  min-width: 100vw;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+
+body.help {
+  font-size: 125%;
+}
+
+#message {
+  position: fixed;
+  font-size: 500%;
+  color: rgba(255, 255, 255, 0.8);
+  border: none;
+  background-color: transparent;
+}
+
+body.help > #message {
+  display: none;
+  position: relative;
+}
+
+body.help > #fireworks {
+  display: none;
+}
+
+#fireworks {
+  position: relative;
+  width: 90vw;
+  height: 80vh;
+}
+
+#help {
+  display: none;  
+  padding: 0 2em;
+}
+
+#help h1, #help h2, #help h3 {
+  padding-top: 1em;
+  padding-bottom: 0.25em;
+}
+
+#help p {
+  padding-bottom: 1em;
+}
+
+#help ul {
+  padding: 0.5em 1em;
+}
+
+#help ul, #help ul li {
+  display: flex;
+  flex-direction: column;
+}
+
+#help ul li b {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#help .param-name {
+  color: #3fc5f0;
+}
+
+#help .param-value {
+  color: #6decb9;
+}
+
+#help .separator {
+  color: #eef5b2;
+}
+
+body.help #help {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+svg {
+  display: none;
+}
+
+pre {
+  font-family: 'Courier New', Courier, monospace;
+  width: 100%;
+  text-align: left;
+  text-wrap: wrap;
+  overflow: hidden;
+}
