@@ -3,15 +3,15 @@ import * as utils from 'https://www.pellicciotta.com/hinolugi-support.js/js/util
 import * as log from 'https://www.pellicciotta.com/hinolugi-support.js/js/log.mjs';
 
 const fireworksPerSecond = 1.6;
-const defaultMusic = 'https://www.youtube.com/watch?v=3GwjfUFyY6M'; // Default music (YouTube): "Let's Celebrate"
+const defaultMusic = null; // Default music: none (only direct audio files supported)
 
 let showHelpInfo = false;
 let targetDate = new Date(new Date().getTime() + 10000);
 let targetMessage = "Let's Celebrate!";
 let targetShape = "twinkle";
 let svgPathId = null;
-let musicUrl = null; // Resolved music URL (may be YouTube music or direct audio)
-let musicPlayerState = { playing: false, autoplayBlocked: false, ytId: null };
+let musicUrl = null; // Resolved music URL (direct audio files only)
+let musicPlayerState = { playing: false, autoplayBlocked: false };
 
 // Fit the #message element to the visible viewport by adjusting its font-size (px).
 function fitMessageToViewport(el) {
@@ -219,10 +219,15 @@ async function tryPlayMusic(url) {
   try {
     await audio.play();
     musicPlayerState.playing = true;
+    // Hide play button if playback succeeded
+    const btn = document.getElementById('play-music');
+    if (btn) btn.hidden = true;
   } 
   catch (err) {
     // Autoplay blocked; show play button so user can start playback
     musicPlayerState.autoplayBlocked = true;
+    const btn = document.getElementById('play-music');
+    if (btn) btn.hidden = false;
   }
 }
 
@@ -231,33 +236,10 @@ document.addEventListener('click', (e) => {
   const btn = document.getElementById('play-music');
   if (!btn) return;
   if (e.target === btn) {
-    // Try to start any audio or send play to YouTube iframe by re-creating embed with autoplay=1
-    const container = document.getElementById('audio-container');
-    if (!container) return;
-    const audioEl = container.querySelector('audio');
+    const audioEl = document.getElementById('music');
     if (audioEl) {
-      audioEl.play().catch(() => { });
+      audioEl.play().catch(()=>{});
       btn.hidden = true;
-      return;
-    }
-    // For YouTube, recreate iframe without mute so playback is audible after user gesture
-    const iframe = container.querySelector('iframe');
-    if (iframe && musicPlayerState.ytId) {
-      iframe.remove();
-      // remove existing fallback link (if any)
-      const existing = container.querySelector('.yt-fallback');
-      if (existing) existing.remove();
-      const newIframe = document.createElement('iframe');
-      newIframe.src = `https://www.youtube-nocookie.com/embed/${musicPlayerState.ytId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
-      newIframe.allow = 'autoplay; encrypted-media';
-      newIframe.setAttribute('allowfullscreen', '');
-      container.appendChild(newIframe);
-      const newLink = document.createElement('div');
-      newLink.className = 'yt-fallback';
-      newLink.innerHTML = `<a href="https://www.youtube.com/watch?v=${musicPlayerState.ytId}" target="_blank" rel="noopener">Open on YouTube</a>`;
-      container.appendChild(newLink);
-      btn.hidden = true;
-      musicPlayerState.autoplayBlocked = false;
     }
   }
 });

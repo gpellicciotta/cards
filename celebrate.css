@@ -118,7 +118,7 @@ pre {
   overflow: hidden;
 }
 
-/* Audio / YouTube embed container */
+/* Audio embed container */
 #audio-container {
   position: fixed;
   right: 1vw;
@@ -129,7 +129,7 @@ pre {
   max-height: 30vh;
   z-index: 9999;
   display: none;
-  /* shown only when music is present or playing */
+  /* Shown only when music is present or playing */
 }
 
 #audio-container iframe,
@@ -162,14 +162,14 @@ pre {
   display: none;
 }
 
-/* YouTube fallback link styling */
-.yt-fallback {
+/* Music fallback link styling */
+.music-fallback {
   margin-top: 0.4rem;
   text-align: center;
   font-size: 0.9rem;
 }
 
-.yt-fallback a {
+.music-fallback a {
   color: #fff;
   background: rgba(0, 0, 0, 0.5);
   padding: 0.25rem 0.5rem;
@@ -177,6 +177,6 @@ pre {
   text-decoration: none;
 }
 
-.yt-fallback a:hover {
+.music-fallback a:hover {
   opacity: 0.9;
 }
